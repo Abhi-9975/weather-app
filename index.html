@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    label {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 250px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h1, h2 {
+      margin-top: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    h1.loading {
+      color: #777;
+      font-style: italic;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <label for="name">Enter city name</label><br/>
+    <input id="name" type="text" placeholder="e.g., Delhi"/><br/>
+    <button onclick="getWeatherData()">Get Weather</button>
+    <h1 id="h1"></h1>
+    <h2 id="h2"></h2>
+  </div>
+
+  <script>
+    async function getWeatherData() {
+      const myName = document.getElementById("name").value.trim();
+      const h1 = document.getElementById("h1");
+      const h2 = document.getElementById("h2");
+
+      h1.textContent = "";
+      h2.textContent = "";
+
+      if (myName.length === 0) {
+        alert("⚠️ Please enter a city name.");
+        return;
+      }
+
+      h1.textContent = "...Loading...";
+      h1.classList.add("loading");
+
+      try {
+        const response = await fetch("https://crudcrud.com/api/52a3cd14a81e4107872c23f740df4a4c/users");
+        const result = await response.json();
+
+        const data = result.find(item => item.state.toLowerCase() === myName.toLowerCase());
+
+        if (data) {
+          h1.classList.remove("loading");
+          h1.textContent = `🌡️ ${data.state} Temperature: ${data.temperature}`;
+          h2.textContent = `🌤️ Weather Condition: ${data.condition}`;
+        } else {
+          h1.classList.remove("loading");
+          h1.textContent = "❌ No data found for this city.";
+        }
+      } catch (error) {
+        h1.classList.remove("loading");
+        h1.textContent = "⚠️ Error fetching data.";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
